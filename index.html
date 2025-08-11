@@ -1,74 +1,294 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Jogo da Adivinhação</title>
+  <meta charset="UTF-8" />
+  <title>Jogo Termo</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
       text-align: center;
-      background-color: #f5f5f5;
-      padding-top: 50px;
+      margin: 0;
+      padding: 20px;
+      user-select: none;
     }
-
     h1 {
-      color: #333;
+      margin-bottom: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-shadow: 1px 1px 5px #0008;
     }
 
-    input, button {
-      padding: 10px;
-      font-size: 16px;
+    #game {
+      margin: 0 auto;
+      max-width: 350px;
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      gap: 8px;
     }
 
-    #resultado {
+    .row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .tile {
+      border: 2px solid #444;
+      height: 60px;
+      font-size: 2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 60px;
+      user-select: none;
+      background-color: #222;
+      border-radius: 6px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .tile.correct {
+      background-color: #6aaa64;
+      border-color: #6aaa64;
+      color: #fff;
+    }
+    .tile.present {
+      background-color: #c9b458;
+      border-color: #c9b458;
+      color: #fff;
+    }
+    .tile.absent {
+      background-color: #3a3a3c;
+      border-color: #3a3a3c;
+      color: #bbb;
+    }
+
+    #keyboard {
       margin-top: 20px;
-      font-size: 18px;
-      color: #444;
+      max-width: 350px;
+      margin-left: auto;
+      margin-right: auto;
+      user-select: none;
     }
 
-    #reiniciar {
-      display: none;
-      margin-top: 20px;
-      padding: 10px 20px;
+    .key-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+      gap: 6px;
     }
+
+    .key {
+      background-color: #555;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 12px 14px;
+      font-size: 1rem;
+      user-select: none;
+      transition: background-color 0.3s;
+      text-transform: uppercase;
+      flex: 1;
+      max-width: 40px;
+    }
+
+    .key.wide {
+      max-width: 70px;
+    }
+
+    .key.correct {
+      background-color: #6aaa64;
+    }
+    .key.present {
+      background-color: #c9b458;
+    }
+    .key.absent {
+      background-color: #3a3a3c;
+      color: #bbb;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      min-height: 1.5rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 3px #0008;
+    }
+
   </style>
 </head>
 <body>
 
-  <h1>Adivinhe o número (1 a 100)</h1>
-  <input type="number" id="palpite" placeholder="Digite seu palpite" />
-  <button onclick="verificarPalpite()">Tentar</button>
-
-  <div id="resultado"></div>
-  <button id="reiniciar" onclick="reiniciarJogo()">Jogar novamente</button>
+  <h1>TERMO</h1>
+  <div id="game"></div>
+  <div id="keyboard"></div>
+  <div id="message"></div>
 
   <script>
-    let numeroSecreto = Math.floor(Math.random() * 100) + 1;
-    let tentativas = 0;
+    const palavras = [
+      'amigo', 'vento', 'canto', 'livro', 'plano',
+      'porta', 'festa', 'sabor', 'tempo', 'fluir',
+      'gente', 'campo', 'grito', 'marco', 'firme'
+    ];
 
-    function verificarPalpite() {
-      const palpite = parseInt(document.getElementById('palpite').value);
-      const resultado = document.getElementById('resultado');
+    const palavraSecreta = palavras[Math.floor(Math.random() * palavras.length)];
+    const tentativasMax = 6;
+    let tentativas = [];
+    let linhaAtual = 0;
 
-      tentativas++;
+    const gameDiv = document.getElementById('game');
+    const keyboardDiv = document.getElementById('keyboard');
+    const messageDiv = document.getElementById('message');
 
-      if (palpite === numeroSecreto) {
-        resultado.innerHTML = `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativas.`;
-        document.getElementById('reiniciar').style.display = 'inline-block';
-      } else if (palpite < numeroSecreto) {
-        resultado.innerHTML = '🔼 Tente um número maior.';
-      } else if (palpite > numeroSecreto) {
-        resultado.innerHTML = '🔽 Tente um número menor.';
+    // Criar grid 6x5
+    for(let i = 0; i < tentativasMax; i++) {
+      const row = document.createElement('div');
+      row.classList.add('row');
+      for(let j = 0; j < 5; j++) {
+        const tile = document.createElement('div');
+        tile.classList.add('tile');
+        row.appendChild(tile);
+      }
+      gameDiv.appendChild(row);
+    }
+
+    // Criar teclado virtual
+    const letras = [
+      ['q','w','e','r','t','y','u','i','o','p'],
+      ['a','s','d','f','g','h','j','k','l'],
+      ['enter','z','x','c','v','b','n','m','backspace']
+    ];
+
+    letras.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.classList.add('key-row');
+      row.forEach(key => {
+        const keyBtn = document.createElement('button');
+        keyBtn.textContent = key === 'backspace' ? '←' : (key === 'enter' ? 'Enter' : key);
+        keyBtn.classList.add('key');
+        if(key === 'enter' || key === 'backspace') keyBtn.classList.add('wide');
+        keyBtn.addEventListener('click', () => handleKey(key));
+        rowDiv.appendChild(keyBtn);
+      });
+      keyboardDiv.appendChild(rowDiv);
+    });
+
+    // Estado atual da palavra digitada
+    let palpiteAtual = '';
+
+    function handleKey(key) {
+      if(linhaAtual >= tentativasMax) return;
+
+      if(key === 'enter') {
+        if(palpiteAtual.length !== 5) {
+          showMessage('A palavra precisa ter 5 letras.');
+          return;
+        }
+        if(!palavras.includes(palpiteAtual)) {
+          showMessage('Palavra não encontrada na lista.');
+          return;
+        }
+        checarPalpite();
+      }
+      else if(key === 'backspace') {
+        if(palpiteAtual.length > 0) {
+          palpiteAtual = palpiteAtual.slice(0, -1);
+          atualizarLinha();
+        }
+      }
+      else if(key.match(/^[a-z]$/) && palpiteAtual.length < 5) {
+        palpiteAtual += key;
+        atualizarLinha();
       }
     }
 
-    function reiniciarJogo() {
-      numeroSecreto = Math.floor(Math.random() * 100) + 1;
-      tentativas = 0;
-      document.getElementById('resultado').innerHTML = '';
-      document.getElementById('palpite').value = '';
-      document.getElementById('reiniciar').style.display = 'none';
+    function atualizarLinha() {
+      const row = gameDiv.children[linhaAtual];
+      for(let i = 0; i < 5; i++) {
+        const tile = row.children[i];
+        tile.textContent = palpiteAtual[i] ? palpiteAtual[i].toUpperCase() : '';
+        tile.className = 'tile'; // limpa classes de cor
+      }
     }
+
+    function checarPalpite() {
+      const row = gameDiv.children[linhaAtual];
+      const segredo = palavraSecreta;
+      const palpite = palpiteAtual;
+      const letrasPalpite = palpite.split('');
+      const letrasSegredo = segredo.split('');
+      let corTiles = Array(5).fill('absent');
+
+      // Para corrigir as cores, primeiro marca verdes
+      let usadoSegredo = Array(5).fill(false);
+
+      // Verifica letras corretas na posição correta
+      for(let i = 0; i < 5; i++) {
+        if(letrasPalpite[i] === letrasSegredo[i]) {
+          corTiles[i] = 'correct';
+          usadoSegredo[i] = true;
+        }
+      }
+
+      // Verifica letras presentes (amarelas)
+      for(let i = 0; i < 5; i++) {
+        if(corTiles[i] === 'correct') continue;
+        for(let j = 0; j < 5; j++) {
+          if(!usadoSegredo[j] && letrasPalpite[i] === letrasSegredo[j]) {
+            corTiles[i] = 'present';
+            usadoSegredo[j] = true;
+            break;
+          }
+        }
+      }
+
+      // Atualiza visual dos tiles e teclado
+      for(let i = 0; i < 5; i++) {
+        const tile = row.children[i];
+        tile.classList.add(corTiles[i]);
+      }
+      atualizarTeclado(letrasPalpite, corTiles);
+
+      if(palpite === segredo) {
+        showMessage('🎉 Parabéns! Você acertou a palavra!');
+        linhaAtual = tentativasMax; // bloqueia novas tentativas
+      } else {
+        linhaAtual++;
+        palpiteAtual = '';
+        if(linhaAtual === tentativasMax) {
+          showMessage(`Fim de jogo! A palavra era: ${segredo.toUpperCase()}`);
+        } else {
+          showMessage('');
+        }
+      }
+    }
+
+    function atualizarTeclado(letras, cores) {
+      letras.forEach((letra, i) => {
+        const keyButtons = [...document.querySelectorAll('.key')];
+        keyButtons.forEach(keyBtn => {
+          if(keyBtn.textContent.toLowerCase() === letra) {
+            if(keyBtn.classList.contains('correct')) return; // mantém verde
+            if(keyBtn.classList.contains('present') && cores[i] === 'absent') return; // mantém amarelo se já tiver
+            keyBtn.classList.remove('absent', 'present', 'correct');
+            keyBtn.classList.add(cores[i]);
+          }
+        });
+      });
+    }
+
+    function showMessage(msg) {
+      messageDiv.textContent = msg;
+    }
+
+    // Suporte para teclado físico
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Enter') handleKey('enter');
+      else if(e.key === 'Backspace') handleKey('backspace');
+      else if(e.key.match(/^[a-zA-Z]$/)) handleKey(e.key.toLowerCase());
+    });
+
   </script>
 
 </body>

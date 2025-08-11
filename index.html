@@ -1,182 +1,158 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Jogo Termo</title>
-  
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jogo do Quadrado</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    user-select: none;
+  }
+  h1 {
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  #game-area {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  #square {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: #ff4757;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #square:hover {
+    background-color: #ffa502;
+  }
+  #score {
+    margin-top: 15px;
+    font-size: 1.5rem;
+    color: #fff;
+  }
+  #time-left {
+    margin-top: 5px;
+    font-size: 1.2rem;
+    color: #fff;
+  }
+  #start-btn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    background-color: #2ed573;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #start-btn:hover {
+    background-color: #1eae60;
+  }
+</style>
 </head>
 <body>
 
-  <h1>TERMO</h1>
-  <div id="game"></div>
-  <div id="keyboard"></div>
-  <div id="message"></div>
+<h1>Jogo do Quadrado</h1>
+<div id="game-area">
+  <div id="square" style="display:none;"></div>
+</div>
+<div id="score">Pontuação: 0</div>
+<div id="time-left">Tempo: 30s</div>
+<button id="start-btn">Começar</button>
 
-  <script>
-    const palavras = [
-      'amigo', 'vento', 'canto', 'livro', 'plano',
-      'porta', 'festa', 'sabor', 'tempo', 'fluir',
-      'gente', 'campo', 'grito', 'marco', 'firme'
-    ];
+<script>
+  const square = document.getElementById('square');
+  const gameArea = document.getElementById('game-area');
+  const scoreDisplay = document.getElementById('score');
+  const timeDisplay = document.getElementById('time-left');
+  const startBtn = document.getElementById('start-btn');
 
-    const palavraSecreta = palavras[Math.floor(Math.random() * palavras.length)];
-    const tentativasMax = 6;
-    let tentativas = [];
-    let linhaAtual = 0;
+  let score = 0;
+  let timeLeft = 30;
+  let gameInterval;
+  let timerInterval;
+  let lastClickTime = 0;
 
-    const gameDiv = document.getElementById('game');
-    const keyboardDiv = document.getElementById('keyboard');
-    const messageDiv = document.getElementById('message');
+  function randomPosition() {
+    const maxX = gameArea.clientWidth - square.clientWidth;
+    const maxY = gameArea.clientHeight - square.clientHeight;
+    const x = Math.floor(Math.random() * maxX);
+    const y = Math.floor(Math.random() * maxY);
+    return {x, y};
+  }
 
-    // Criar grid 6x5
-    for(let i = 0; i < tentativasMax; i++) {
-      const row = document.createElement('div');
-      row.classList.add('row');
-      for(let j = 0; j < 5; j++) {
-        const tile = document.createElement('div');
-        tile.classList.add('tile');
-        row.appendChild(tile);
-      }
-      gameDiv.appendChild(row);
+  function moveSquare() {
+    const pos = randomPosition();
+    square.style.left = pos.x + 'px';
+    square.style.top = pos.y + 'px';
+  }
+
+  function updateScore() {
+    const now = Date.now();
+    const diff = now - lastClickTime;
+    lastClickTime = now;
+
+    // Pontos baseados na rapidez, mínimo 10 pontos, máximo 100 pontos
+    let points = Math.max(10, 100 - diff / 5);
+    points = Math.floor(points);
+    score += points;
+    scoreDisplay.textContent = `Pontuação: ${score}`;
+  }
+
+  function gameOver() {
+    clearInterval(gameInterval);
+    clearInterval(timerInterval);
+    square.style.display = 'none';
+    alert(`Fim do jogo! Sua pontuação final é: ${score}`);
+    startBtn.disabled = false;
+  }
+
+  function updateTimer() {
+    timeLeft--;
+    timeDisplay.textContent = `Tempo: ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      gameOver();
     }
+  }
 
-    // Criar teclado virtual
-    const letras = [
-      ['q','w','e','r','t','y','u','i','o','p'],
-      ['a','s','d','f','g','h','j','k','l'],
-      ['enter','z','x','c','v','b','n','m','backspace']
-    ];
+  square.addEventListener('click', () => {
+    updateScore();
+    moveSquare();
+  });
 
-    letras.forEach(row => {
-      const rowDiv = document.createElement('div');
-      rowDiv.classList.add('key-row');
-      row.forEach(key => {
-        const keyBtn = document.createElement('button');
-        keyBtn.textContent = key === 'backspace' ? '←' : (key === 'enter' ? 'Enter' : key);
-        keyBtn.classList.add('key');
-        if(key === 'enter' || key === 'backspace') keyBtn.classList.add('wide');
-        keyBtn.addEventListener('click', () => handleKey(key));
-        rowDiv.appendChild(keyBtn);
-      });
-      keyboardDiv.appendChild(rowDiv);
-    });
+  startBtn.addEventListener('click', () => {
+    score = 0;
+    timeLeft = 30;
+    lastClickTime = Date.now();
+    scoreDisplay.textContent = `Pontuação: ${score}`;
+    timeDisplay.textContent = `Tempo: ${timeLeft}s`;
+    square.style.display = 'block';
+    moveSquare();
+    startBtn.disabled = true;
 
-    // Estado atual da palavra digitada
-    let palpiteAtual = '';
-
-    function handleKey(key) {
-      if(linhaAtual >= tentativasMax) return;
-
-      if(key === 'enter') {
-        if(palpiteAtual.length !== 5) {
-          showMessage('A palavra precisa ter 5 letras.');
-          return;
-        }
-        if(!palavras.includes(palpiteAtual)) {
-          showMessage('Palavra não encontrada na lista.');
-          return;
-        }
-        checarPalpite();
-      }
-      else if(key === 'backspace') {
-        if(palpiteAtual.length > 0) {
-          palpiteAtual = palpiteAtual.slice(0, -1);
-          atualizarLinha();
-        }
-      }
-      else if(key.match(/^[a-z]$/) && palpiteAtual.length < 5) {
-        palpiteAtual += key;
-        atualizarLinha();
-      }
-    }
-
-    function atualizarLinha() {
-      const row = gameDiv.children[linhaAtual];
-      for(let i = 0; i < 5; i++) {
-        const tile = row.children[i];
-        tile.textContent = palpiteAtual[i] ? palpiteAtual[i].toUpperCase() : '';
-        tile.className = 'tile'; // limpa classes de cor
-      }
-    }
-
-    function checarPalpite() {
-      const row = gameDiv.children[linhaAtual];
-      const segredo = palavraSecreta;
-      const palpite = palpiteAtual;
-      const letrasPalpite = palpite.split('');
-      const letrasSegredo = segredo.split('');
-      let corTiles = Array(5).fill('absent');
-
-      // Para corrigir as cores, primeiro marca verdes
-      let usadoSegredo = Array(5).fill(false);
-
-      // Verifica letras corretas na posição correta
-      for(let i = 0; i < 5; i++) {
-        if(letrasPalpite[i] === letrasSegredo[i]) {
-          corTiles[i] = 'correct';
-          usadoSegredo[i] = true;
-        }
-      }
-
-      // Verifica letras presentes (amarelas)
-      for(let i = 0; i < 5; i++) {
-        if(corTiles[i] === 'correct') continue;
-        for(let j = 0; j < 5; j++) {
-          if(!usadoSegredo[j] && letrasPalpite[i] === letrasSegredo[j]) {
-            corTiles[i] = 'present';
-            usadoSegredo[j] = true;
-            break;
-          }
-        }
-      }
-
-      // Atualiza visual dos tiles e teclado
-      for(let i = 0; i < 5; i++) {
-        const tile = row.children[i];
-        tile.classList.add(corTiles[i]);
-      }
-      atualizarTeclado(letrasPalpite, corTiles);
-
-      if(palpite === segredo) {
-        showMessage('🎉 Parabéns! Você acertou a palavra!');
-        linhaAtual = tentativasMax; // bloqueia novas tentativas
-      } else {
-        linhaAtual++;
-        palpiteAtual = '';
-        if(linhaAtual === tentativasMax) {
-          showMessage(`Fim de jogo! A palavra era: ${segredo.toUpperCase()}`);
-        } else {
-          showMessage('');
-        }
-      }
-    }
-
-    function atualizarTeclado(letras, cores) {
-      letras.forEach((letra, i) => {
-        const keyButtons = [...document.querySelectorAll('.key')];
-        keyButtons.forEach(keyBtn => {
-          if(keyBtn.textContent.toLowerCase() === letra) {
-            if(keyBtn.classList.contains('correct')) return; // mantém verde
-            if(keyBtn.classList.contains('present') && cores[i] === 'absent') return; // mantém amarelo se já tiver
-            keyBtn.classList.remove('absent', 'present', 'correct');
-            keyBtn.classList.add(cores[i]);
-          }
-        });
-      });
-    }
-
-    function showMessage(msg) {
-      messageDiv.textContent = msg;
-    }
-
-    // Suporte para teclado físico
-    document.addEventListener('keydown', e => {
-      if(e.key === 'Enter') handleKey('enter');
-      else if(e.key === 'Backspace') handleKey('backspace');
-      else if(e.key.match(/^[a-zA-Z]$/)) handleKey(e.key.toLowerCase());
-    });
-
-  </script>
+    timerInterval = setInterval(updateTimer, 1000);
+    gameInterval = setInterval(() => {
+      moveSquare();
+    }, 1500);
+  });
+</script>
 
 </body>
 </html>

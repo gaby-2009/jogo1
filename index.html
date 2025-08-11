@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Jogo da Adivinhação</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f5f5f5;
+      padding-top: 50px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #444;
+    }
+
+    #reiniciar {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Adivinhe o número (1 a 100)</h1>
+  <input type="number" id="palpite" placeholder="Digite seu palpite" />
+  <button onclick="verificarPalpite()">Tentar</button>
+
+  <div id="resultado"></div>
+  <button id="reiniciar" onclick="reiniciarJogo()">Jogar novamente</button>
+
+  <script>
+    let numeroSecreto = Math.floor(Math.random() * 100) + 1;
+    let tentativas = 0;
+
+    function verificarPalpite() {
+      const palpite = parseInt(document.getElementById('palpite').value);
+      const resultado = document.getElementById('resultado');
+
+      tentativas++;
+
+      if (palpite === numeroSecreto) {
+        resultado.innerHTML = `🎉 Parabéns! Você acertou o número ${numeroSecreto} em ${tentativas} tentativas.`;
+        document.getElementById('reiniciar').style.display = 'inline-block';
+      } else if (palpite < numeroSecreto) {
+        resultado.innerHTML = '🔼 Tente um número maior.';
+      } else if (palpite > numeroSecreto) {
+        resultado.innerHTML = '🔽 Tente um número menor.';
+      }
+    }
+
+    function reiniciarJogo() {
+      numeroSecreto = Math.floor(Math.random() * 100) + 1;
+      tentativas = 0;
+      document.getElementById('resultado').innerHTML = '';
+      document.getElementById('palpite').value = '';
+      document.getElementById('reiniciar').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

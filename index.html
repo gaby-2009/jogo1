@@ -21,6 +21,13 @@
   h1 {
     margin-bottom: 10px;
   }
+  #hint { /* Estilo para a dica */
+    font-size: 1.2rem;
+    color: #f06bff;
+    margin-bottom: 20px;
+    text-align: center;
+    max-width: 80%;
+  }
   #word {
     font-size: 2.5rem;
     letter-spacing: 10px;
@@ -77,17 +84,17 @@
 
 <h1>Jogo da Forca</h1>
 
+<div id="hint"></div>
+
 <div id="word"></div>
 <div id="wrong-letters"><strong>Letras erradas:</strong> <span id="wrong-letters-list"></span></div>
 <div id="notification"></div>
 
 <svg id="hangman-draw" height="200" width="150">
-  <!-- Postes e base -->
   <line x1="10" y1="190" x2="140" y2="190" stroke="#61dafb" stroke-width="4"/>
   <line x1="40" y1="190" x2="40" y2="20" stroke="#61dafb" stroke-width="4"/>
   <line x1="40" y1="20" x2="100" y2="20" stroke="#61dafb" stroke-width="4"/>
   <line x1="100" y1="20" x2="100" y2="40" stroke="#61dafb" stroke-width="4"/>
-  <!-- Partes do corpo -->
   <circle id="head" cx="100" cy="55" r="15" stroke="#61dafb" stroke-width="4" fill="none" visibility="hidden"/>
   <line id="body" x1="100" y1="70" x2="100" y2="120" stroke="#61dafb" stroke-width="4" visibility="hidden"/>
   <line id="left-arm" x1="100" y1="80" x2="70" y2="100" stroke="#61dafb" stroke-width="4" visibility="hidden"/>
@@ -108,6 +115,7 @@
   const popup = document.getElementById('popup');
   const finalMessage = document.getElementById('final-message');
   const playBtn = document.getElementById('play-button');
+  const hintEl = document.getElementById('hint');
 
   const hangmanParts = [
     document.getElementById('head'),
@@ -118,53 +126,25 @@
     document.getElementById('right-leg')
   ];
 
+  // MODIFICADO: A lista de palavras agora é um array de objetos com "palavra" e "dica"
   const words = [
-'casa',
-'bola',
-'azul',
-'livro',
-'pato',
-'fogo',
-'trem',
-'lago',
-'verde',
-'carro',
-'roupa',
-'pão',
-'dente',
-'rato',
-'faca',
-'janela',
-'sorvete',
-'escola',
-'caminho',
-'laranja',
-'morango',
-'telefone',
-'mochila',
-'amarelo',
-'chocolate',
-'banana',
-'esquilo',
-'computador',
-'inconstitucional',
-'oftalmologista',
-'hipopótamo',
-'proparoxítona',
-'efervescência',
-'esdrúxulo',
-'imprescindível',
-'idiossincrasia',
-'paralelepípedo',
-'otorrinolaringologista',
-'ornitorrinco',
-'xilofone',
-'escrúpulo',
-'pneumonia',
-
+    { palavra: 'casa', dica: 'Um lugar para morar.' },
+    { palavra: 'bola', dica: 'Objeto usado em vários esportes.' },
+    { palavra: 'azul', dica: 'Uma cor primária, como a do céu.' },
+    { palavra: 'livro', dica: 'É feito de páginas e contém histórias.' },
+    { palavra: 'trem', dica: 'Meio de transporte que anda sobre trilhos.' },
+    { palavra: 'computador', dica: 'Aparelho eletrônico que processa informações.' },
+    { palavra: 'celular', dica: 'Dispositivo móvel para fazer ligações.' },
+    { palavra: 'bicicleta', dica: 'Veículo de duas rodas que se move com pedais.' },
+    { palavra: 'oftalmologista', dica: 'Médico que cuida da saúde dos olhos.' },
+    { palavra: 'inconstitucional', dica: 'Algo que vai contra a lei máxima de um país.' },
+    { palavra: 'paralelepípedo', dica: 'Bloco de concreto usado em pavimentação.' },
+    { palavra: 'ornitorrinco', dica: 'Mamífero aquático com bico de pato.' },
+    { palavra: 'hipopótamo', dica: 'Grande mamífero africano que vive na água.' },
   ];
 
   let selectedWord = '';
+  let selectedHint = ''; // NOVO: Variável para a dica
   let correctLetters = [];
   let wrongLetters = [];
 
@@ -204,9 +184,25 @@
     }, 1500);
   }
 
+  // MODIFICADO: A nova função startGame() para inicializar o jogo
+  function startGame() {
+    const selectedObj = words[Math.floor(Math.random() * words.length)];
+    selectedWord = selectedObj.palavra;
+    selectedHint = selectedObj.dica;
+    hintEl.innerText = 'Dica: ' + selectedHint;
+
+    correctLetters = [];
+    wrongLetters = [];
+
+    popup.classList.remove('show');
+    updateWrongLetters();
+    displayWord();
+  }
+
   window.addEventListener('keydown', e => {
+    // Permite apenas letras de A-Z (sem acentos)
     const letter = e.key.toLowerCase();
-    if(letter >= 'a' && letter <= 'z' && letter.length === 1) {
+    if(letter.length === 1 && letter.match(/[a-z]/)) {
       if(selectedWord.includes(letter)) {
         if(!correctLetters.includes(letter)) {
           correctLetters.push(letter);
@@ -225,19 +221,11 @@
     }
   });
 
-  playBtn.addEventListener('click', () => {
-    correctLetters = [];
-    wrongLetters = [];
-    selectedWord = words[Math.floor(Math.random() * words.length)];
-    popup.classList.remove('show');
-    updateWrongLetters();
-    displayWord();
-  });
+  // MODIFICADO: playBtn agora chama a função startGame()
+  playBtn.addEventListener('click', startGame);
 
-  // Inicializar jogo
-  selectedWord = words[Math.floor(Math.random() * words.length)];
-  displayWord();
-
+  // Inicializar jogo quando a página carrega
+  startGame();
 </script>
 
 </body>

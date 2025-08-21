@@ -6,8 +6,8 @@
 <title>Jogo da Forca</title>
 <style>
   body {
-    background: #ba18c6;
-    color: #d461fb;
+    background: #7b3fbf;
+    color: #b57de0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
@@ -23,7 +23,7 @@
   }
   #hint { /* Estilo para a dica */
     font-size: 1.2rem;
-    color: #eeabf5;
+    color: #c9a3e8;
     margin-bottom: 20px;
     text-align: center;
     max-width: 80%;
@@ -39,14 +39,14 @@
     font-size: 1.2rem;
   }
   #notification {
-    color: #db9ee2;
+    color: #bfa0e2;
     font-weight: bold;
     height: 1.5rem;
   }
   #popup {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(221, 139, 247, 0.9);
+    background-color: rgba(123, 63, 191, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -60,7 +60,7 @@
   }
   #popup button {
     margin-top: 15px;
-    background-color: #d387f4;
+    background-color: #a67de0;
     border: none;
     padding: 10px 20px;
     color: #302834;
@@ -71,7 +71,7 @@
     transition: background-color 0.3s ease;
   }
   #popup button:hover {
-    background-color: #a451cb;
+    background-color: #7b3fbf;
   }
   #hangman-draw {
     margin-top: 20px;
@@ -91,16 +91,16 @@
 <div id="notification"></div>
 
 <svg id="hangman-draw" height="200" width="150">
-  <line x1="10" y1="190" x2="140" y2="190" stroke="#61dafb" stroke-width="4"/>
-  <line x1="40" y1="190" x2="40" y2="20" stroke="#61dafb" stroke-width="4"/>
-  <line x1="40" y1="20" x2="100" y2="20" stroke="#61dafb" stroke-width="4"/>
-  <line x1="100" y1="20" x2="100" y2="40" stroke="#61dafb" stroke-width="4"/>
-  <circle id="head" cx="100" cy="55" r="15" stroke="#61dafb" stroke-width="4" fill="none" visibility="hidden"/>
-  <line id="body" x1="100" y1="70" x2="100" y2="120" stroke="#61dafb" stroke-width="4" visibility="hidden"/>
-  <line id="left-arm" x1="100" y1="80" x2="70" y2="100" stroke="#61dafb" stroke-width="4" visibility="hidden"/>
-  <line id="right-arm" x1="100" y1="80" x2="130" y2="100" stroke="#61dafb" stroke-width="4" visibility="hidden"/>
-  <line id="left-leg" x1="100" y1="120" x2="70" y2="160" stroke="#61dafb" stroke-width="4" visibility="hidden"/>
-  <line id="right-leg" x1="100" y1="120" x2="130" y2="160" stroke="#61dafb" stroke-width="4" visibility="hidden"/>
+  <line x1="10" y1="190" x2="140" y2="190" stroke="#a67de0" stroke-width="4"/>
+  <line x1="40" y1="190" x2="40" y2="20" stroke="#a67de0" stroke-width="4"/>
+  <line x1="40" y1="20" x2="100" y2="20" stroke="#a67de0" stroke-width="4"/>
+  <line x1="100" y1="20" x2="100" y2="40" stroke="#a67de0" stroke-width="4"/>
+  <circle id="head" cx="100" cy="55" r="15" stroke="#a67de0" stroke-width="4" fill="none" visibility="hidden"/>
+  <line id="body" x1="100" y1="70" x2="100" y2="120" stroke="#a67de0" stroke-width="4" visibility="hidden"/>
+  <line id="left-arm" x1="100" y1="80" x2="70" y2="100" stroke="#a67de0" stroke-width="4" visibility="hidden"/>
+  <line id="right-arm" x1="100" y1="80" x2="130" y2="100" stroke="#a67de0" stroke-width="4" visibility="hidden"/>
+  <line id="left-leg" x1="100" y1="120" x2="70" y2="160" stroke="#a67de0" stroke-width="4" visibility="hidden"/>
+  <line id="right-leg" x1="100" y1="120" x2="130" y2="160" stroke="#a67de0" stroke-width="4" visibility="hidden"/>
 </svg>
 
 <div id="popup">
@@ -202,31 +202,4 @@
   window.addEventListener('keydown', e => {
     // Permite apenas letras de A-Z (sem acentos)
     const letter = e.key.toLowerCase();
-    if(letter.length === 1 && letter.match(/[a-z]/)) {
-      if(selectedWord.includes(letter)) {
-        if(!correctLetters.includes(letter)) {
-          correctLetters.push(letter);
-          displayWord();
-        } else {
-          showNotification();
-        }
-      } else {
-        if(!wrongLetters.includes(letter)) {
-          wrongLetters.push(letter);
-          updateWrongLetters();
-        } else {
-          showNotification();
-        }
-      }
-    }
-  });
-
-  // MODIFICADO: playBtn agora chama a função startGame()
-  playBtn.addEventListener('click', startGame);
-
-  // Inicializar jogo quando a página carrega
-  startGame();
-</script>
-
-</body>
-</html>
+    if(letter.length

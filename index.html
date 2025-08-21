@@ -78,6 +78,13 @@
     width: 150px;
     height: 200px;
   }
+  /* Espaçamento para as letras na palavra */
+  #word span {
+    border-bottom: 2px solid #b57de0;
+    display: inline-block;
+    width: 30px;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -126,7 +133,7 @@
     document.getElementById('right-leg')
   ];
 
-  // MODIFICADO: A lista de palavras agora é um array de objetos com "palavra" e "dica"
+  // Lista de palavras com dicas
   const words = [
     { palavra: 'casa', dica: 'Um lugar para morar.' },
     { palavra: 'bola', dica: 'Objeto usado em vários esportes.' },
@@ -144,10 +151,11 @@
   ];
 
   let selectedWord = '';
-  let selectedHint = ''; // NOVO: Variável para a dica
+  let selectedHint = '';
   let correctLetters = [];
   let wrongLetters = [];
 
+  // Mostra a palavra com letras corretas e sublinhados para as letras faltantes
   function displayWord() {
     wordEl.innerHTML = selectedWord
       .split('')
@@ -155,7 +163,7 @@
         <span>${correctLetters.includes(letter) ? letter : '_'}</span>
       `)
       .join(' ');
-    
+
     const innerWord = wordEl.textContent.replace(/\s/g, '');
 
     if(innerWord === selectedWord) {
@@ -164,9 +172,10 @@
     }
   }
 
+  // Atualiza as letras erradas e desenha as partes do boneco
   function updateWrongLetters() {
     wrongLettersEl.textContent = wrongLetters.join(', ');
-    
+
     hangmanParts.forEach((part, index) => {
       part.style.visibility = index < wrongLetters.length ? 'visible' : 'hidden';
     });
@@ -177,6 +186,7 @@
     }
   }
 
+  // Mostra notificação se a letra já foi usada
   function showNotification() {
     notification.innerText = 'Você já tentou essa letra!';
     setTimeout(() => {
@@ -184,7 +194,7 @@
     }, 1500);
   }
 
-  // MODIFICADO: A nova função startGame() para inicializar o jogo
+  // Começa o jogo, seleciona palavra e reseta variáveis
   function startGame() {
     const selectedObj = words[Math.floor(Math.random() * words.length)];
     selectedWord = selectedObj.palavra;
@@ -199,7 +209,35 @@
     displayWord();
   }
 
+  // Evento para capturar as teclas digitadas
   window.addEventListener('keydown', e => {
-    // Permite apenas letras de A-Z (sem acentos)
     const letter = e.key.toLowerCase();
-    if(letter.length
+    // Verifica se é uma letra de a-z
+    if(letter.length === 1 && letter.match(/[a-z]/)) {
+      if(selectedWord.includes(letter)) {
+        if(!correctLetters.includes(letter)) {
+          correctLetters.push(letter);
+          displayWord();
+        } else {
+          showNotification();
+        }
+      } else {
+        if(!wrongLetters.includes(letter)) {
+          wrongLetters.push(letter);
+          updateWrongLetters();
+        } else {
+          showNotification();
+        }
+      }
+    }
+  });
+
+  // Botão para reiniciar o jogo
+  playBtn.addEventListener('click', startGame);
+
+  // Iniciar o jogo na carga da página
+  startGame();
+</script>
+
+</body>
+</html>

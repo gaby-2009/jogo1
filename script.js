@@ -1,18 +1,4 @@
 const words = [
-  { palavra: 'casa', dica: 'Um lugar para morar.' },
-  { palavra: 'bola', dica: 'Objeto usado em vários esportes.' },
-  { palavra: 'azul', dica: 'Uma cor primária, como a do céu.' },
-  { palavra: 'livro', dica: 'É feito de páginas e contém histórias.' },
-  { palavra: 'trem', dica: 'Meio de transporte que anda sobre trilhos.' },
-  { palavra: 'computador', dica: 'Aparelho eletrônico que processa informações.' },
-  { palavra: 'celular', dica: 'Dispositivo móvel para fazer ligações.' },
-  { palavra: 'bicicleta', dica: 'Veículo de duas rodas que se move com pedais.' },
-  { palavra: 'oftalmologista', dica: 'Médico que cuida da saúde dos olhos.' },
-  { palavra: 'inconstitucional', dica: 'Algo que vai contra a lei máxima de um país.' },
-  { palavra: 'paralelepipedo', dica: 'Bloco de concreto usado em pavimentação.' },
-  { palavra: 'ornitorrinco', dica: 'Mamífero aquático com bico de pato.' },
-  { palavra: 'hipopotamo', dica: 'Grande mamífero africano que vive na água.' },
-
   { palavra: 'girassol', dica: 'Flor que segue o movimento do sol.' },
   { palavra: 'astronauta', dica: 'Pessoa que viaja pelo espaço.' },
   { palavra: 'caneta', dica: 'Instrumento usado para escrever.' },

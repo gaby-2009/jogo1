@@ -13,7 +13,6 @@ const words = [
   { palavra: 'ornitorrinco', dica: 'Mamífero aquático com bico de pato.' },
   { palavra: 'hipopotamo', dica: 'Grande mamífero africano que vive na água.' },
 
-  // Palavras novas
   { palavra: 'girassol', dica: 'Flor que segue o movimento do sol.' },
   { palavra: 'astronauta', dica: 'Pessoa que viaja pelo espaço.' },
   { palavra: 'caneta', dica: 'Instrumento usado para escrever.' },
@@ -27,4 +26,20 @@ const words = [
   { palavra: 'computacao', dica: 'Estudo e uso de computadores.' },
   { palavra: 'melancia', dica: 'Fruta grande, vermelha e refrescante.' },
   { palavra: 'xadrez', dica: 'Jogo de tabuleiro com peças e estratégias.' },
+
+  { palavra: 'antropomorfismo', dica: 'Atribuir características humanas a animais ou objetos.' },
+  { palavra: 'desoxirribonucleico', dica: 'Molécula que carrega a informação genética.' },
+  { palavra: 'paralelepipedo', dica: 'Sólido geométrico com seis faces retangulares.' },
+  { palavra: 'microeconomia', dica: 'Ramo da economia que estuda agentes individuais.' },
+  { palavra: 'otorrinolaringologista', dica: 'Médico especialista em ouvido, nariz e garganta.' },
+  { palavra: 'polissacarídeo', dica: 'Carboidrato formado por muitas unidades de açúcar.' },
+  { palavra: 'hematoporfirina', dica: 'Composto relacionado à produção de heme no sangue.' },
+  { palavra: 'circunlóquio', dica: 'Modo indireto ou evasivo de falar.' },
+  { palavra: 'fotossíntese', dica: 'Processo das plantas para converter luz em energia.' },
+  { palavra: 'anticonstitucionalissimamente', dica: 'Advérbio superlativo relacionado a algo inconstitucional.' },
+  { palavra: 'quisquilhoso', dica: 'Pessoa muito preocupada com detalhes pequenos.' },
+  { palavra: 'sarcófago', dica: 'Caixa usada para sepultamento de corpos antigos.' },
+  { palavra: 'onipotente', dica: 'Que tem todo o poder.' },
+  { palavra: 'idiossincrasia', dica: 'Característica ou hábito peculiar de alguém.' },
+  { palavra: 'esdrúxulo', dica: 'Palavra com acento na antepenúltima sílaba, algo estranho.' },
 ];
